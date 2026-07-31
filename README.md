@@ -46,8 +46,8 @@ The physics engine is completely independent from SFML. SFML is only used to ren
 ## Building
 
 ```bash
-git clone <repo-url>
-cd SIMPLE-2D-ENGINE
+git clone https://github.com/welim-14/simple-2d-engine.git
+cd simple-2d-engine
 
 cmake -B build
 cmake --build build
