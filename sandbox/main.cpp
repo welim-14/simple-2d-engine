@@ -3,7 +3,7 @@
 
 void printVec(const char* name, const Vec2& v)
 {
-    std::cout << name << " = (" << v.x << ", " << v.y << ")\n";
+    std::cout << name << " = (" << v.m_x << ", " << v.m_y << ")\n";
 }
 
 int main()

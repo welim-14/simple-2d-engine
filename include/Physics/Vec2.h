@@ -4,8 +4,8 @@
 class Vec2
 {
 public:
-	float x;
-	float y;
+	float m_x;
+	float m_y;
 	
 	//constructor
 	Vec2();
