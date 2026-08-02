@@ -11,6 +11,8 @@ public:
 	float getWidth() const;
 	float getHeight() const;
 
+	ShapeType getType() const override;
+
 private:
 	float m_width;
 	float m_height;

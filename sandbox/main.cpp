@@ -1,58 +1,60 @@
-#include <iostream>
 #include "Physics/Vec2.h"
+#include "Physics/BoxShape.h"
+#include "Physics/CircleShape.h"
+#include "Physics/Shape.h"
+#include<iostream>
+#include<vector>
 
-void printVec(const char* name, const Vec2& v)
+void printShape(const Shape& shape)
 {
-    std::cout << name << " = (" << v.m_x << ", " << v.m_y << ")\n";
+    switch (shape.getType())
+    {
+        case ShapeType::Circle:
+            std::cout << "Circle\n";
+            break;
+
+        case ShapeType::Box:
+            std::cout << "Box\n";
+            break;
+    }
 }
 
 int main()
 {
-    Vec2 a(3.f, 4.f);
-    Vec2 b(2.f, 1.f);
+	CircleShape circle(25.0f);
+	BoxShape box(100.0f, 50.0f);
 
-    std::cout << "===== Initial Vectors =====\n";
-    printVec("a", a);
-    printVec("b", b);
+	std::cout << "box width: " << box.getWidth() << std::endl;
+	
+	std::cout << "box height: " << box.getHeight() << std::endl;
 
-    std::cout << "\n===== Basic Operations =====\n";
+	std::cout << "circle radius: " << circle.getRadius() << std::endl;
 
-    printVec("a + b", a + b);
-    printVec("a - b", a - b);
-    printVec("a * 2", a * 2.f);
-    printVec("a / 2", a / 2.f);
+	
+	if(circle.getType() == ShapeType::Circle)
+		std::cout << "Circulo esta bien\n";
 
-    std::cout << "\n===== Compound Operators =====\n";
+	if(box.getType() == ShapeType::Box)
+		std::cout << "Box ok\n";
+	
+	
+	Shape* shape1 = &circle;
+	Shape* shape2 = &box;
 
-    Vec2 c = a;
+	std::cout << "\n POLIMORFISMO \n";
 
-    c += b;
-    printVec("c += b", c);
+	std::cout << static_cast<int>(shape1->getType()) << '\n';
+	std::cout << static_cast<int>(shape2->getType()) << '\n';
+	
+	std::vector<Shape*> shapes;
+	shapes.push_back(&circle);
+	shapes.push_back(&box);
 
-    c = a;
-    c -= b;
-    printVec("c -= b", c);
-
-    c = a;
-    c *= 2.f;
-    printVec("c *= 2", c);
-
-    c = a;
-    c /= 2.f;
-    printVec("c /= 2", c);
-
-    std::cout << "\n===== Vector Math =====\n";
-
-    std::cout << "Length of a: " << a.length() << '\n';
-    std::cout << "Length squared of a: " << a.lengthSquared() << '\n';
-    std::cout << "Dot(a, b): " << a.dot(b) << '\n';
-
-    printVec("Normalized a", a.normalized());
-
-    std::cout << "\n===== Zero Vector =====\n";
-
-    printVec("Zero", Vec2::Zero);
-    printVec("Normalized Zero", Vec2::Zero.normalized());
-
-    return 0;
+	for(Shape* s : shapes)
+	{
+		printShape(*s);
+	}
+	return 0;
 }
+
+

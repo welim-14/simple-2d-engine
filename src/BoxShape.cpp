@@ -1,6 +1,7 @@
 #include "Physics/BoxShape.h"
 
-BoxShape(float width, float height)
+
+BoxShape::BoxShape(float width, float height)
 {
 	m_width = width;
 	m_height = height;
@@ -16,7 +17,7 @@ float BoxShape::getHeight() const
 	return m_height;
 }
 
-ShapeType BoxShape::getType const
+ShapeType BoxShape::getType() const
 {
 	return ShapeType::Box;
 }

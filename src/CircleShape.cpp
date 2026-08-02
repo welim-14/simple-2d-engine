@@ -1,6 +1,6 @@
 #include "Physics/CircleShape.h"
 
-CicleShape(float radius)
+CircleShape::CircleShape(float radius)
 {
 	m_radius = radius;
 }
