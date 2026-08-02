@@ -22,6 +22,8 @@ FetchContent_MakeAvailable(SFML)
 
 add_library(Physics
     src/Vec2.cpp
+    src/CircleShape.cpp
+    src/BoxShape.cpp
 )
 
 target_include_directories(Physics

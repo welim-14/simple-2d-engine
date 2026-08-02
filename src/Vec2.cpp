@@ -3,68 +3,68 @@
 
 Vec2::Vec2()
 {
-	this->x = 0.0f;
-	this->y = 0.0f;
+	m_x = 0.0f;
+	m_y = 0.0f;
 }
 
 Vec2::Vec2(float x, float y)
 {
-	this->x = x;
-	this->y = y;
+	m_x = x;
+	m_y = y;
 }
 
 Vec2 Vec2::operator+(const Vec2 &other) const
 {
-	return Vec2(this->x + other.x, this->y + other.y);
+	return Vec2(m_x + other.m_x, m_y + other.m_y);
 }
 
 Vec2 Vec2::operator-(const Vec2 &other) const
 {
-	return Vec2(this->x - other.x, this->y - other.y);
+	return Vec2(m_x - other.m_x, m_y - other.m_y);
 }
 
 Vec2 Vec2::operator*(float escalar) const
 {
-	return Vec2(this->x * escalar, this->y * escalar);
+	return Vec2(m_x * escalar, m_y * escalar);
 }
 
 Vec2 Vec2::operator/(float escalar) const
 {
-	return Vec2(this->x / escalar, this->y / escalar);
+	return Vec2(m_x / escalar, m_y / escalar);
 }
 
 Vec2& Vec2::operator+=(const Vec2 &other)
 {
-	this->x += other.x;
-	this->y += other.y;
+	m_x += other.m_x;
+	m_y += other.m_y;
 	return *this;
 }
 
 Vec2& Vec2::operator-=(const Vec2 &other)
 {
-	this->x -= other.x;
-	this->y -= other.y;
+	m_x -= other.m_x;
+	m_y -= other.m_y;
 	return *this;
 }
 
 Vec2& Vec2::operator*=(float escalar)
 {
-	this->x *= escalar;
-	this->y *= escalar;
+	m_x *= escalar;
+	m_y *= escalar;
 	return *this;
 }
 
 Vec2& Vec2::operator/=(float escalar)
 {
-	this->x /= escalar;
-	this->y /= escalar;
+	m_x /= escalar;
+	m_y /= escalar;
 	return *this;
 }
 
 float Vec2::lengthSquared() const
 {
-	float sq_x = x * x;
-	float sq_y = y * y;
+	float sq_x = m_x * m_x;
+	float sq_y = m_y * m_y;
 
 	return sq_x + sq_y;
 }
@@ -90,8 +90,8 @@ void Vec2::normalize()
 
 float Vec2::dot(const Vec2 &other) const
 {
-	float a = this->x * other.x;
-	float b = this->y * other.y;
+	float a = m_x * other.m_x;
+	float b = m_y * other.m_y;
 
 	return (a+b);
 }
