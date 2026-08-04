@@ -1,3 +1,8 @@
+/**
+ * BoxShape.h
+ * Derivada de Shape, clase para formas rectangulares
+ */
+
 #ifndef BOXSHAPE_H
 #define BOXSHAPE_H
 

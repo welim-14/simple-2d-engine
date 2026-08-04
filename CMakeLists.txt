@@ -24,6 +24,7 @@ add_library(Physics
     src/Vec2.cpp
     src/CircleShape.cpp
     src/BoxShape.cpp
+    src/RigidBody.cpp
 )
 
 target_include_directories(Physics

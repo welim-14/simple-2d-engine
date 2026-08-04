@@ -1,3 +1,7 @@
+/**
+ * Vec2.h
+ * Clase de vectores 2D con operaciones basicas
+ */
 #ifndef VEC2_H
 #define VEC2_H
 
@@ -25,8 +29,8 @@ public:
 	//propiedades del vector
 	float length() const;
 	float lengthSquared() const; //sin aplicar raiz cuadrada
-	Vec2 normalized() const;
-	void normalize();
+	Vec2 normalized() const; //vector normalizado, no modifica original
+	void normalize(); // normaliza el vector original
 
 	float dot(const Vec2 &other) const;
 

@@ -1,60 +1,32 @@
+#include <iostream>
+#include "Physics/RigidBody.h"
 #include "Physics/Vec2.h"
-#include "Physics/BoxShape.h"
-#include "Physics/CircleShape.h"
-#include "Physics/Shape.h"
-#include<iostream>
-#include<vector>
-
-void printShape(const Shape& shape)
-{
-    switch (shape.getType())
-    {
-        case ShapeType::Circle:
-            std::cout << "Circle\n";
-            break;
-
-        case ShapeType::Box:
-            std::cout << "Box\n";
-            break;
-    }
-}
 
 int main()
 {
-	CircleShape circle(25.0f);
-	BoxShape box(100.0f, 50.0f);
+	// Prueba simple de RigidBody con gravedad
 
-	std::cout << "box width: " << box.getWidth() << std::endl;
-	
-	std::cout << "box height: " << box.getHeight() << std::endl;
 
-	std::cout << "circle radius: " << circle.getRadius() << std::endl;
+	// Cuerpo con masa 1.0, posición inicial en el origen
+	RigidBody body(Vec2::Zero, 1.0f, nullptr); // shape nullptr, no es necesaria una forma para esta prueba
 
-	
-	if(circle.getType() == ShapeType::Circle)
-		std::cout << "Circulo esta bien\n";
+	const float dt = 1.0f / 60.0f; // aprox 60 FPS
+	const Vec2 gravity(0.0f, -9.8f);
 
-	if(box.getType() == ShapeType::Box)
-		std::cout << "Box ok\n";
-	
-	
-	Shape* shape1 = &circle;
-	Shape* shape2 = &box;
+	std::cout << "Estado inicial -> pos: (" 
+	          << body.getPosition().m_x << ", " << body.getPosition().m_y 
+	          << ") vel: (" 
+	          << body.getVelocity().m_x << ", " << body.getVelocity().m_y << ")\n";
 
-	std::cout << "\n POLIMORFISMO \n";
-
-	std::cout << static_cast<int>(shape1->getType()) << '\n';
-	std::cout << static_cast<int>(shape2->getType()) << '\n';
-	
-	std::vector<Shape*> shapes;
-	shapes.push_back(&circle);
-	shapes.push_back(&box);
-
-	for(Shape* s : shapes)
+	for (int frame = 0; frame < 10; ++frame)
 	{
-		printShape(*s);
+		body.applyForce(gravity * body.getMass()); // F = m * g
+		body.integrate(dt);
+
+		std::cout << "Frame " << frame 
+		          << " -> pos: (" << body.getPosition().m_x << ", " << body.getPosition().m_y << ")"
+		          << " vel: (" << body.getVelocity().m_x << ", " << body.getVelocity().m_y << ")\n";
 	}
+
 	return 0;
 }
-
-

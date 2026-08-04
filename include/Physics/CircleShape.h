@@ -1,3 +1,8 @@
+/**
+ * CircleShape.h
+ * Derivada de Shape, clase para formas circulares
+ */
+
 #ifndef CIRCLESHAPE_H
 #define CIRCLESHAPE_H
 
