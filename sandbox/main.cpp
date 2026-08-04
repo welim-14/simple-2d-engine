@@ -46,7 +46,7 @@ int main()
 
 	sf::CircleShape circulo_sfml(k_radio);
 	circulo_sfml.setOrigin(circulo_sfml.getGeometricCenter());
-	circulo_sfml.setFillColor(sf::Color::Green);
+	circulo_sfml.setFillColor(sf::Color(86, 168, 219));
 	circulo_sfml.setPosition({p_inicial.m_x, p_inicial.m_y});
 
 	sf::RenderWindow window(sf::VideoMode({static_cast<unsigned int>(k_anchuraVentana), static_cast<unsigned int>(k_alturaVentana)}), "Test1");
@@ -68,7 +68,7 @@ int main()
 		window.clear();
 		actualizarPosicion(cuerpo, circulo_sfml);
 
-		std:: cout << "Posición: (" << cuerpo.getPosition().m_x << ", " << cuerpo.getPosition().m_y << ")" << std::endl;
+		std:: cout << "Posición: (" << cuerpo.getPosition().m_x << ", " << cuerpo.getPosition().m_y << ")\n";
 
 		window.draw(circulo_sfml);
 		window.display();
