@@ -9,6 +9,8 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 include(FetchContent)
 
+enable_testing()
+
 FetchContent_Declare(
     SFML
     GIT_REPOSITORY https://github.com/SFML/SFML.git
@@ -25,6 +27,7 @@ add_library(Physics
     src/CircleShape.cpp
     src/BoxShape.cpp
     src/RigidBody.cpp
+    src/World.cpp
 )
 
 target_include_directories(Physics
@@ -40,4 +43,13 @@ target_link_libraries(Sandbox
     PRIVATE
         Physics
         SFML::Graphics
+)
+
+add_executable(Tests
+    tests/world_tests.cpp
+)
+
+target_link_libraries(Tests
+    PRIVATE
+        Physics
 )

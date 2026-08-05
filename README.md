@@ -55,10 +55,14 @@ sudo apt-install build-essential libxrandr-dev libxcursor-dev libudev-dev libope
 ```bash
 git clone https://github.com/welim-14/simple-2d-engine.git
 cd simple-2d-engine
+```
 
+```bash
 cmake -B build
 cmake --build build
+```
 
+```bash
 ./build/bin/Sandbox
 ```
 
