@@ -62,6 +62,7 @@ int main()
 			const CircleShape& circleShape = static_cast<const CircleShape&>(cuerpo->getShape());
 			sf::CircleShape circulo_sfml(circleShape.getRadius());
 			circulo_sfml.setFillColor(sf::Color::Green);
+			circulo_sfml.setOrigin(circulo_sfml.getGeometricCenter());
 			circulos_sfml.push_back(circulo_sfml);
 		}
 		else if (cuerpo->getShape().getType() == ShapeType::Box)
@@ -69,6 +70,7 @@ int main()
 			const BoxShape& boxShape = static_cast<const BoxShape&>(cuerpo->getShape());
 			sf::RectangleShape rectangulo_sfml({boxShape.getWidth(), boxShape.getHeight()});
 			rectangulo_sfml.setFillColor(sf::Color::Blue);
+			rectangulo_sfml.setOrigin(rectangulo_sfml.getGeometricCenter());
 			rectangulos_sfml.push_back(rectangulo_sfml);
 		}
 	}
@@ -77,9 +79,6 @@ int main()
 
 	sf::Clock clock;
 	float acumulador = 0.0f;
-
-	size_t cont_c = 0;
-	size_t cont_r = 0;
 
 	while (window.isOpen())
 	{
@@ -93,7 +92,10 @@ int main()
 		}
 
 		window.clear();
-		
+
+		size_t cont_c = 0;
+		size_t cont_r = 0;
+
 		for(RigidBody* cuerpo : cuerpos)
 		{
 			if (cuerpo->getShape().getType() == ShapeType::Circle)

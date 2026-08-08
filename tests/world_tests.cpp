@@ -16,6 +16,8 @@
 #include "Physics/World.h"
 #include "Physics/RigidBody.h"
 #include "Physics/CircleShape.h"
+#include "Physics/BoxShape.h"
+#include "Physics/Collision.h"
 #include <cassert>
 #include <iostream>
 #include <memory>
@@ -127,6 +129,83 @@ void test_gravity_getter_setter_roundtrip()
 	
 }
 
+// ---------------------------------------------------------------------
+// Tests de deteccion de colisiones
+// ---------------------------------------------------------------------
+
+void test_two_circles_overlapping_are_detected()
+{
+	// Dos circulos de radio 1 centrados a distancia 1 -> se superponen.
+	World world(Vec2::Zero);
+	RigidBody* a = world.createBody(Vec2(0.0f, 0.0f), 1.0f, std::make_unique<CircleShape>(1.0f));
+	RigidBody* b = world.createBody(Vec2(1.0f, 0.0f), 1.0f, std::make_unique<CircleShape>(1.0f));
+	(void)a;
+	(void)b;
+
+	world.step(0.0f);
+
+	assert(world.getCollidingPairs().size() == 1);
+
+	std::cout << "test_two_circles_overlapping_are_detected OK\n";
+}
+
+void test_two_circles_apart_are_not_detected()
+{
+	World world(Vec2::Zero);
+	world.createBody(Vec2(0.0f, 0.0f), 1.0f, std::make_unique<CircleShape>(1.0f));
+	world.createBody(Vec2(10.0f, 0.0f), 1.0f, std::make_unique<CircleShape>(1.0f));
+
+	world.step(0.0f);
+
+	assert(world.getCollidingPairs().empty());
+
+	std::cout << "test_two_circles_apart_are_not_detected OK\n";
+}
+
+void test_two_boxes_overlapping_are_detected()
+{
+	// Cajas de 2x2 centradas a distancia 1 en X -> se superponen (mitad de cada una).
+	World world(Vec2::Zero);
+	world.createBody(Vec2(0.0f, 0.0f), 1.0f, std::make_unique<BoxShape>(2.0f, 2.0f));
+	world.createBody(Vec2(1.0f, 0.0f), 1.0f, std::make_unique<BoxShape>(2.0f, 2.0f));
+
+	world.step(0.0f);
+
+	assert(world.getCollidingPairs().size() == 1);
+
+	std::cout << "test_two_boxes_overlapping_are_detected OK\n";
+}
+
+void test_box_and_circle_not_overlapping_are_not_detected()
+{
+	World world(Vec2::Zero);
+	world.createBody(Vec2(0.0f, 0.0f), 1.0f, std::make_unique<BoxShape>(1.0f, 1.0f));
+	world.createBody(Vec2(20.0f, 0.0f), 1.0f, std::make_unique<CircleShape>(1.0f));
+
+	world.step(0.0f);
+
+	assert(world.getCollidingPairs().empty());
+
+	std::cout << "test_box_and_circle_not_overlapping_are_not_detected OK\n";
+}
+
+void test_three_bodies_only_touching_pair_is_reported()
+{
+	// A y B se tocan, C esta lejos de ambos -> solo 1 par reportado.
+	World world(Vec2::Zero);
+	RigidBody* bodyA = world.createBody(Vec2(0.0f, 0.0f), 1.0f, std::make_unique<CircleShape>(1.0f));
+	RigidBody* bodyB = world.createBody(Vec2(1.5f, 0.0f), 1.0f, std::make_unique<CircleShape>(1.0f));
+	world.createBody(Vec2(50.0f, 0.0f), 1.0f, std::make_unique<CircleShape>(1.0f));
+
+	world.step(0.0f);
+
+	assert(world.getCollidingPairs().size() == 1);
+	const CollidingPair& pair = world.getCollidingPairs()[0];
+	assert((pair.a == bodyA && pair.b == bodyB) || (pair.a == bodyB && pair.b == bodyA));
+
+	std::cout << "test_three_bodies_only_touching_pair_is_reported OK\n";
+}
+
 int main()
 {
 	test_static_body_does_not_move();
@@ -136,6 +215,12 @@ int main()
 	test_bodies_with_different_mass_fall_at_same_rate();
 	test_remove_body_keeps_other_pointers_valid();
 	test_gravity_getter_setter_roundtrip();
+
+	test_two_circles_overlapping_are_detected();
+	test_two_circles_apart_are_not_detected();
+	test_two_boxes_overlapping_are_detected();
+	test_box_and_circle_not_overlapping_are_not_detected();
+	test_three_bodies_only_touching_pair_is_reported();
 
 	std::cout << "All tests passed!\n";
 	return 0;
