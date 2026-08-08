@@ -2,8 +2,10 @@
 #include <optional>
 
 #include "Physics/CircleShape.h"
+#include "Physics/BoxShape.h"
 #include "Physics/RigidBody.h"
 #include "Physics/Vec2.h"
+#include "Physics/World.h"
 #include "SFML/Graphics.hpp"
 
 void actualizarPosicion(const RigidBody& cuerpo, sf::CircleShape& circulo_sfml)
@@ -12,6 +14,14 @@ void actualizarPosicion(const RigidBody& cuerpo, sf::CircleShape& circulo_sfml)
 	const float x = pos.m_x;
 	const float y = pos.m_y;
 	circulo_sfml.setPosition({x, y});
+}
+
+void actualizarPosicion(const RigidBody& cuerpo, sf::RectangleShape& rectangulo_sfml)
+{
+	const Vec2& pos = cuerpo.getPosition();
+	const float x = pos.m_x;
+	const float y = pos.m_y;
+	rectangulo_sfml.setPosition({x, y});
 }
 
 void procesarEventos(sf::RenderWindow& window)
@@ -25,12 +35,6 @@ void procesarEventos(sf::RenderWindow& window)
 	}
 }
 
-void actualizarCuerpo(RigidBody& cuerpo, const Vec2& gravedad, float dt)
-{
-	cuerpo.applyForce(gravedad * cuerpo.getMass());
-	cuerpo.integrate(dt);
-}
-
 int main()
 {
 	constexpr float k_radio = 50.0f;
@@ -39,20 +43,43 @@ int main()
 	constexpr float k_dt = 1.0f / 60.0f;
 	constexpr float k_masa = 1.0f;
 
-	const Vec2 p_inicial(640.0f, 0.0f);
 	const Vec2 gravedad(0.0f, 9.81f);
 
-	RigidBody cuerpo(p_inicial, k_masa, std::make_unique<CircleShape>(k_radio));
+	World world(gravedad);
+	RigidBody* cuerpo = world.createBody(Vec2(100.0f, 0.0f), k_masa, std::make_unique<CircleShape>(k_radio));
+	RigidBody* cuerpo2 = world.createBody(Vec2(600.0f, 0.0f), k_masa, std::make_unique<BoxShape>(15.0f, 30.0f));
 
-	sf::CircleShape circulo_sfml(k_radio);
-	circulo_sfml.setOrigin(circulo_sfml.getGeometricCenter());
-	circulo_sfml.setFillColor(sf::Color(86, 168, 219));
-	circulo_sfml.setPosition({p_inicial.m_x, p_inicial.m_y});
+	std::vector<RigidBody*> cuerpos = {cuerpo, cuerpo2}; // arreglo para almacenar los cuerpos de world
+
+	std::vector<sf::CircleShape> circulos_sfml;
+	std::vector<sf::RectangleShape> rectangulos_sfml;
+
+	// Crear las representaciones gráficas de los cuerpos
+	for (RigidBody* cuerpo : cuerpos)
+	{
+		if (cuerpo->getShape().getType() == ShapeType::Circle)
+		{
+			const CircleShape& circleShape = static_cast<const CircleShape&>(cuerpo->getShape());
+			sf::CircleShape circulo_sfml(circleShape.getRadius());
+			circulo_sfml.setFillColor(sf::Color::Green);
+			circulos_sfml.push_back(circulo_sfml);
+		}
+		else if (cuerpo->getShape().getType() == ShapeType::Box)
+		{
+			const BoxShape& boxShape = static_cast<const BoxShape&>(cuerpo->getShape());
+			sf::RectangleShape rectangulo_sfml({boxShape.getWidth(), boxShape.getHeight()});
+			rectangulo_sfml.setFillColor(sf::Color::Blue);
+			rectangulos_sfml.push_back(rectangulo_sfml);
+		}
+	}
 
 	sf::RenderWindow window(sf::VideoMode({static_cast<unsigned int>(k_anchuraVentana), static_cast<unsigned int>(k_alturaVentana)}), "Test1");
 
 	sf::Clock clock;
 	float acumulador = 0.0f;
+
+	size_t cont_c = 0;
+	size_t cont_r = 0;
 
 	while (window.isOpen())
 	{
@@ -61,16 +88,37 @@ int main()
 		acumulador += clock.restart().asSeconds();
 		while (acumulador >= k_dt)
 		{
-			actualizarCuerpo(cuerpo, gravedad, k_dt);
+			world.step(k_dt);
 			acumulador -= k_dt;
 		}
 
 		window.clear();
-		actualizarPosicion(cuerpo, circulo_sfml);
+		
+		for(RigidBody* cuerpo : cuerpos)
+		{
+			if (cuerpo->getShape().getType() == ShapeType::Circle)
+			{
+				actualizarPosicion(*cuerpo, circulos_sfml[cont_c]);
+				cont_c++;
+			}
+			else if (cuerpo->getShape().getType() == ShapeType::Box)
+			{
+				actualizarPosicion(*cuerpo, rectangulos_sfml[cont_r]);
+				cont_r++;
+			}
+		}
 
-		std:: cout << "Posición: (" << cuerpo.getPosition().m_x << ", " << cuerpo.getPosition().m_y << ")\n";
+		std:: cout << "Posición: (" << cuerpo->getPosition().m_x << ", " << cuerpo->getPosition().m_y << ")\n";
+		std:: cout << "Posición: (" << cuerpo2->getPosition().m_x << ", " << cuerpo2->getPosition().m_y << ")\n";
 
-		window.draw(circulo_sfml);
+		for(const auto& circulo : circulos_sfml)
+		{
+			window.draw(circulo);
+		}
+		for(const auto& rectangulo : rectangulos_sfml)
+		{
+			window.draw(rectangulo);
+		}
 		window.display();
 	}
 
