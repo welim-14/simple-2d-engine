@@ -95,12 +95,36 @@ void test_remove_body_keeps_other_pointers_valid()
 	// y verifica que A y C siguen teniendo la posicion/velocidad correcta
 	// despues de otro step(). Esto prueba que vector<unique_ptr<RigidBody>>
 	// no invalida los punteros de los elementos que NO se removieron.
+	//
+	World world;
+
+	RigidBody* body1 = world.createBody(Vec2(0.0f, 0.0f), 1.0f, std::make_unique<CircleShape>(1.0f));
+	RigidBody* body2 = world.createBody(Vec2(0.0f, 0.0f), 2.0f, std::make_unique<CircleShape>(1.0f));
+	RigidBody* body3 = world.createBody(Vec2(0.0f, 0.0f), 3.0f, std::make_unique<CircleShape>(1.0f));
+
+	world.step(1.0f);
+
+	world.removeBody(body2);
+
+	assert(body1->getVelocity().m_y == 9.81f && body1->getPosition().m_y == 9.81f);
+	assert(body3->getVelocity().m_y == 9.81f && body3->getPosition().m_y == 9.81f);
+
+	std::cout << "test_remove_body_keeps_other_pointers_valid OK\n";
 }
 
 void test_gravity_getter_setter_roundtrip()
 {
 	// Pista: crea un World, llama setGravity(Vec2(1.0f, 2.0f)),
 	// y verifica que getGravity() devuelve exactamente ese valor.
+	
+	World world;
+
+	world.setGravity(Vec2(1.0f, 2.0f));
+
+	assert(world.getGravity() == Vec2(1.0f, 2.0f));
+
+	std::cout << "test_gravity_setter_getter_roundtrip OK\n";
+	
 }
 
 int main()
@@ -110,8 +134,8 @@ int main()
 	// Descomenta cada linea a medida que implementes el test correspondiente:
 	test_body_falls_under_gravity();
 	test_bodies_with_different_mass_fall_at_same_rate();
-	// test_remove_body_keeps_other_pointers_valid();
-	// test_gravity_getter_setter_roundtrip();
+	test_remove_body_keeps_other_pointers_valid();
+	test_gravity_getter_setter_roundtrip();
 
 	std::cout << "All tests passed!\n";
 	return 0;

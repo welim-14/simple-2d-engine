@@ -61,6 +61,11 @@ Vec2& Vec2::operator/=(float escalar)
 	return *this;
 }
 
+bool Vec2::operator==(const Vec2& other) const
+{
+	return(m_x == other.m_x && m_y == other.m_y);
+}
+
 float Vec2::lengthSquared() const
 {
 	float sq_x = m_x * m_x;
