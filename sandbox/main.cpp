@@ -8,6 +8,8 @@
 #include "Physics/World.h"
 #include "SFML/Graphics.hpp"
 
+Vec2 gravedad(0.0f, 9.81f);
+
 void actualizarPosicion(const RigidBody& cuerpo, sf::CircleShape& circulo_sfml)
 {
 	const Vec2& pos = cuerpo.getPosition();
@@ -26,13 +28,22 @@ void actualizarPosicion(const RigidBody& cuerpo, sf::RectangleShape& rectangulo_
 
 void procesarEventos(sf::RenderWindow& window)
 {
-	while (const std::optional<sf::Event> event = window.pollEvent())
+	while(const std::optional event = window.pollEvent())
 	{
 		if (event->is<sf::Event::Closed>())
-		{
 			window.close();
+
+		else if(const auto* keyPressed = event->getIf<sf::Event::KeyPressed>())
+		{
+			if(keyPressed->scancode == sf::Keyboard::Scancode::Escape)
+				window.close();
+			if(keyPressed->scancode == sf::Keyboard::Scancode::Up)
+				gravedad.m_y += 9.81f;
+			if(keyPressed->scancode == sf::Keyboard::Scancode::Down)
+				gravedad.m_y -= 9.81f;
 		}
 	}
+
 }
 
 void setShapeColorRandom(sf::Shape& shape)
@@ -53,8 +64,6 @@ int main()
 	constexpr float k_alturaVentana = 720.0f;
 	constexpr float k_dt = 1.0f / 60.0f;
 	constexpr float k_masa = 1.0f;
-
-	const Vec2 gravedad(0.0f, 9.81f * 10.0f);
 
 	World world(gravedad);
 	RigidBody* cuerpo = world.createBody(Vec2(100.0f, 0.0f), k_masa, std::make_unique<CircleShape>(k_radio));
@@ -101,6 +110,13 @@ int main()
 	while (window.isOpen())
 	{
 		procesarEventos(window);
+
+		if(!(world.getGravity() == gravedad))
+		{
+			world.setGravity(gravedad);
+			std::cout << "Gravedad actual: " << world.getGravity().m_x << ", " << world.getGravity().m_y << "\n";
+		}
+			
 
 		acumulador += clock.restart().asSeconds();
 		while (acumulador >= k_dt)
