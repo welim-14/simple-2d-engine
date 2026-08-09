@@ -14,3 +14,8 @@ ShapeType CircleShape::getType() const
 {
 	return ShapeType::Circle;
 }
+
+AABB CircleShape::getLocalBounds() const
+{
+	return AABB{ Vec2(-m_radius, -m_radius), Vec2(m_radius, m_radius) };
+}

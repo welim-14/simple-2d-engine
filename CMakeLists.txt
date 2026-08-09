@@ -28,6 +28,7 @@ add_library(Physics
     src/BoxShape.cpp
     src/RigidBody.cpp
     src/World.cpp
+    src/Collision.cpp
 )
 
 target_include_directories(Physics

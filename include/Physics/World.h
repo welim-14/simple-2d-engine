@@ -7,10 +7,20 @@
 #ifndef WORLD_H
 #define WORLD_H
 
+#include "Physics/Collision.h"
 #include "Physics/RigidBody.h"
 #include "Physics/Vec2.h"
 #include <memory>
 #include <vector>
+
+// Par de bodies detectados en colision durante el ultimo step(), junto con
+// el resultado de la prueba (normal/depth) usado para resolverla
+struct CollidingPair
+{
+	RigidBody* a;
+	RigidBody* b;
+	CollisionInfo info;
+};
 
 class World
 {
@@ -22,16 +32,21 @@ public:
 	RigidBody* createBody(const Vec2& position, float mass, std::unique_ptr<Shape> shape);
 	void removeBody(RigidBody* body);
 
-	void step(float dt); // Aplica gravedad, integra cuerpos (y luego resuelve colisiones)
+	void step(float dt); // Aplica gravedad, integra cuerpos, detecta y resuelve colisiones
 
 	void setGravity(const Vec2& gravity);
 	const Vec2& getGravity() const;
 
 	const std::vector<std::unique_ptr<RigidBody>>& getBodies() const;
+	const std::vector<CollidingPair>& getCollidingPairs() const;
+
 
 private:
 	std::vector<std::unique_ptr<RigidBody>> m_bodies;
+	std::vector<CollidingPair> m_collidingPairs;
 	Vec2 m_gravity;
+
+	void detectCollisions(); // O(n^2) sobre m_bodies, llena m_collidingPairs
 };
 
 #endif

@@ -17,6 +17,7 @@ public:
 	float getHeight() const;
 
 	ShapeType getType() const override;
+	AABB getLocalBounds() const override;
 
 private:
 	float m_width;
