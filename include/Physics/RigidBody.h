@@ -22,6 +22,9 @@ public:
 	float getMass() const;
 	float getInverseMass() const;
 
+	void setRestitution(float restitution);
+	float getRestitution() const;
+
 	Shape& getShape();
 	const Shape& getShape() const;
 
@@ -32,6 +35,7 @@ private:
 
 	float m_mass;
 	float m_inverseMass;
+	float m_restitution; // 0 = no rebota, 1 = rebote perfecto
 
 	std::unique_ptr<Shape> m_shape; // cada RigidBody tiene forma propia, no compartida
 };

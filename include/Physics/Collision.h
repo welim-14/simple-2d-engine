@@ -1,7 +1,7 @@
 /**
  * Collision.h
- * Deteccion de colisiones entre RigidBody (circulo-circulo, caja-caja,
- * y circulo-caja aproximado via AABB). No resuelve/empuja cuerpos todavia.
+ * Deteccion y resolucion de colisiones entre RigidBody (circulo-circulo,
+ * caja-caja, y circulo-caja aproximado via AABB).
  */
 
 #ifndef COLLISION_H
@@ -9,15 +9,14 @@
 
 #include "Physics/RigidBody.h"
 
-// Resultado de una prueba de colision: si hay colision y cuanto se superponen
-// los cuerpos en cada eje. penetration solo es valido si colliding == true.
-// Se calcula aunque todavia no se use para resolver, ya que es el mismo
-// calculo que la deteccion y evita rediseñar la firma cuando se agregue
-// la resolucion de colisiones.
+// Resultado de una prueba de colision: si hay colision, la normal (unitaria,
+// apunta de A hacia B) y cuanto se superponen los cuerpos a lo largo de esa
+// normal. normal/depth solo son validos si colliding == true.
 struct CollisionInfo
 {
 	bool colliding = false;
-	Vec2 penetration = Vec2::Zero;
+	Vec2 normal = Vec2::Zero;
+	float depth = 0.0f;
 };
 
 AABB computeWorldAABB(const RigidBody& body);
@@ -29,5 +28,10 @@ bool aabbVsAabb(const AABB& a, const AABB& b);
 // Circulo-vs-caja se aproxima como AABB-vs-AABB (el circulo usa su AABB
 // circunscrito), ya que no hay SAT circulo-caja fino en este alcance.
 CollisionInfo checkCollision(const RigidBody& a, const RigidBody& b);
+
+// Resuelve una colision ya detectada: aplica impulso (con restitucion) a las
+// velocidades y luego corrige las posiciones para separar los cuerpos.
+// No hace nada si ambos cuerpos son estaticos (inverseMass 0).
+void resolveCollision(RigidBody& a, RigidBody& b, const CollisionInfo& info);
 
 #endif

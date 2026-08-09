@@ -14,7 +14,7 @@
 #include <vector>
 
 // Par de bodies detectados en colision durante el ultimo step(), junto con
-// el resultado de la prueba (penetracion incluida, aun sin usar para resolver)
+// el resultado de la prueba (normal/depth) usado para resolverla
 struct CollidingPair
 {
 	RigidBody* a;
@@ -32,7 +32,7 @@ public:
 	RigidBody* createBody(const Vec2& position, float mass, std::unique_ptr<Shape> shape);
 	void removeBody(RigidBody* body);
 
-	void step(float dt); // Aplica gravedad, integra cuerpos y detecta colisiones
+	void step(float dt); // Aplica gravedad, integra cuerpos, detecta y resuelve colisiones
 
 	void setGravity(const Vec2& gravity);
 	const Vec2& getGravity() const;

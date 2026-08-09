@@ -8,6 +8,7 @@ RigidBody::RigidBody(const Vec2& position, float mass, std::unique_ptr<Shape> sh
 	m_mass = mass;
     // para inverseMass, si la masa es mayor a 0, calculamos su inverso, de lo contrario, pasamos 0
 	m_inverseMass = (mass > 0.0f) ? 1.0f / mass : 0.0f;
+	m_restitution = 0.7f;
 	m_shape = std::move(shape);
 }
 
@@ -62,6 +63,16 @@ float RigidBody::getMass() const
 float RigidBody::getInverseMass() const
 {
     return m_inverseMass;
+}
+
+void RigidBody::setRestitution(float restitution)
+{
+    m_restitution = restitution;
+}
+
+float RigidBody::getRestitution() const
+{
+    return m_restitution;
 }
 
 Shape& RigidBody::getShape()

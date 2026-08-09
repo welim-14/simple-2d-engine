@@ -35,21 +35,39 @@ void procesarEventos(sf::RenderWindow& window)
 	}
 }
 
+void setShapeColorRandom(sf::Shape& shape)
+{
+	// Generar valores aleatorios para los componentes de color
+	int red = rand() % 256;   // Valor entre 0 y 255
+	int green = rand() % 256; // Valor entre 0 y 255
+	int blue = rand() % 256;  // Valor entre 0 y 255
+
+	// Establecer el color del shape
+	shape.setFillColor(sf::Color(red, green, blue));
+}
+
 int main()
 {
 	constexpr float k_radio = 50.0f;
-	constexpr float k_anchuraVentana = 1280.0f;
+	constexpr float k_anchuraVentana = 900.0f;
 	constexpr float k_alturaVentana = 720.0f;
 	constexpr float k_dt = 1.0f / 60.0f;
 	constexpr float k_masa = 1.0f;
 
-	const Vec2 gravedad(0.0f, 9.81f);
+	const Vec2 gravedad(0.0f, 9.81f * 10.0f);
 
 	World world(gravedad);
 	RigidBody* cuerpo = world.createBody(Vec2(100.0f, 0.0f), k_masa, std::make_unique<CircleShape>(k_radio));
-	RigidBody* cuerpo2 = world.createBody(Vec2(600.0f, 0.0f), k_masa, std::make_unique<BoxShape>(15.0f, 30.0f));
+	RigidBody* cuerpo2 = world.createBody(Vec2(138.0f, 250.0f), k_masa, std::make_unique<CircleShape>(k_radio));
+	RigidBody* cuerpo3 = world.createBody(Vec2(120.0f, 400.0f), k_masa*0.25f, std::make_unique<CircleShape>(k_radio/2.0f));
 
-	std::vector<RigidBody*> cuerpos = {cuerpo, cuerpo2}; // arreglo para almacenar los cuerpos de world
+	// bordes de pantalla para rebotar los cuerpos
+	RigidBody* bordeSuperior = world.createBody(Vec2(k_anchuraVentana / 2.0f, 0.0f), 0.0f, std::make_unique<BoxShape>(k_anchuraVentana, 10.0f));
+	RigidBody* bordeInferior = world.createBody(Vec2(k_anchuraVentana / 2.0f, k_alturaVentana), 0.0f, std::make_unique<BoxShape>(k_anchuraVentana, 10.0f));
+	RigidBody* bordeIzquierdo = world.createBody(Vec2(0.0f, k_alturaVentana / 2.0f), 0.0f, std::make_unique<BoxShape>(10.0f, k_alturaVentana));
+	RigidBody* bordeDerecho = world.createBody(Vec2(k_anchuraVentana, k_alturaVentana / 2.0f), 0.0f, std::make_unique<BoxShape>(10.0f, k_alturaVentana));
+
+	std::vector<RigidBody*> cuerpos = {cuerpo, cuerpo2, cuerpo3, bordeSuperior, bordeInferior, bordeIzquierdo, bordeDerecho}; // arreglo para almacenar los cuerpos de world
 
 	std::vector<sf::CircleShape> circulos_sfml;
 	std::vector<sf::RectangleShape> rectangulos_sfml;
@@ -61,7 +79,7 @@ int main()
 		{
 			const CircleShape& circleShape = static_cast<const CircleShape&>(cuerpo->getShape());
 			sf::CircleShape circulo_sfml(circleShape.getRadius());
-			circulo_sfml.setFillColor(sf::Color::Green);
+			setShapeColorRandom(circulo_sfml);
 			circulo_sfml.setOrigin(circulo_sfml.getGeometricCenter());
 			circulos_sfml.push_back(circulo_sfml);
 		}
@@ -69,7 +87,7 @@ int main()
 		{
 			const BoxShape& boxShape = static_cast<const BoxShape&>(cuerpo->getShape());
 			sf::RectangleShape rectangulo_sfml({boxShape.getWidth(), boxShape.getHeight()});
-			rectangulo_sfml.setFillColor(sf::Color::Blue);
+			setShapeColorRandom(rectangulo_sfml);
 			rectangulo_sfml.setOrigin(rectangulo_sfml.getGeometricCenter());
 			rectangulos_sfml.push_back(rectangulo_sfml);
 		}
@@ -110,8 +128,6 @@ int main()
 			}
 		}
 
-		std:: cout << "Posición: (" << cuerpo->getPosition().m_x << ", " << cuerpo->getPosition().m_y << ")\n";
-		std:: cout << "Posición: (" << cuerpo2->getPosition().m_x << ", " << cuerpo2->getPosition().m_y << ")\n";
 
 		for(const auto& circulo : circulos_sfml)
 		{

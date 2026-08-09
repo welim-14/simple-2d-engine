@@ -45,7 +45,10 @@ void World::step(float dt)
         body->integrate(dt);
     }
 
-    detectCollisions(); // detecta colisiones; a futuro: resolverlas
+    detectCollisions();
+
+    for (CollidingPair& pair : m_collidingPairs)
+        resolveCollision(*pair.a, *pair.b, pair.info);
 }
 
 void World::detectCollisions()
