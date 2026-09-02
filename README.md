@@ -66,6 +66,14 @@ cmake --build build
 ./build/bin/Sandbox
 ```
 
+## Current usage
+At startup, the window will generate 3 pre-defined circles and will start the simulation. From there you can use the following keys:
+- <kbd>Space</kbd> Generate a new circle with **random** attributes (position, velocity, size)
+- <kbd>Arrow Up</kbd> Increase gravity
+- <kbd>Arrow Down</kbd> Decrease gravity
+
+> Note that gravity can be represented by a negative value, which means the bodies will be attracted to the top of the window instead.
+
 ## License
 
 MIT License

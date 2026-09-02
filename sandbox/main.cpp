@@ -95,6 +95,13 @@ void procesarEventos(sf::RenderWindow& window)
 			if(keyPressed->scancode == sf::Keyboard::Scancode::Space)
 				agregarCirculo();
 		}
+
+		else if(const auto* resized = event->getIf<sf::Event::Resized>())
+		{
+			sf::FloatRect visibleArea({0.f, 0.f}, {static_cast<float>(resized->size.x), static_cast<float>(resized->size.y)});
+			window.setView(sf::View(visibleArea));
+			
+		}
 	}
 
 }
