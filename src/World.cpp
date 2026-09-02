@@ -48,7 +48,11 @@ void World::step(float dt)
     detectCollisions();
 
     for (CollidingPair& pair : m_collidingPairs)
+    {
         resolveCollision(*pair.a, *pair.b, pair.info);
+        pair.a->integrate(dt);
+        pair.b->integrate(dt);
+    }
 }
 
 void World::detectCollisions()
